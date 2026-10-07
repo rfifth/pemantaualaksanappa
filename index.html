@@ -33,14 +33,17 @@
             </div>
             
             <div class="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-                <!-- Lencana Sesi Semasa (Highlight) -->
                 <div id="public-highlight-badge" class="hidden bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-bold shadow-md animate-pulse whitespace-nowrap">
                     Sesi Semasa: Tiada
                 </div>
 
                 <div class="w-full md:w-64">
-                    <div class="flex justify-between text-xs mb-1">
-                        <span class="text-indigo-200">Kadar Selesai Keseluruhan</span>
+                    <div class="flex justify-between items-center text-xs mb-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-indigo-200">Keseluruhan Sesi Selesai</span>
+                            <!-- Indikator Auto-Save -->
+                            <span id="auto-save-status" class="bg-indigo-800 text-indigo-200 px-2 py-0.5 rounded-full text-[10px] opacity-0 transition-opacity duration-300 font-bold">Tersimpan ✓</span>
+                        </div>
                         <span id="overall-progress-text" class="font-bold text-green-400">0%</span>
                     </div>
                     <div class="w-full bg-indigo-950 rounded-full h-3">
@@ -48,24 +51,17 @@
                     </div>
                 </div>
 
-                <!-- Kawalan Admin (Highlight) -->
                 <div id="admin-controls" class="hidden items-center gap-2 bg-indigo-800 px-2 py-1.5 rounded border border-indigo-700">
                     <span class="text-xs text-indigo-200 font-semibold whitespace-nowrap">Highlight:</span>
                     <select id="highlight-select" onchange="setHighlight(this.value)" class="text-xs text-slate-800 rounded px-1 py-0.5 outline-none font-bold">
                         <option value="0">Tutup</option>
-                        <option value="1">Sesi 1</option>
-                        <option value="2">Sesi 2</option>
-                        <option value="3">Sesi 3</option>
-                        <option value="4">Sesi 4</option>
-                        <option value="5">Sesi 5</option>
-                        <option value="6">Sesi 6</option>
-                        <option value="7">Sesi 7</option>
-                        <option value="8">Sesi 8</option>
-                        <option value="9">Sesi 9</option>
-                        <option value="10">Sesi 10</option>
-                        <option value="11">Sesi 11</option>
-                        <option value="12">Sesi 12</option>
+                        <option value="1">Sesi 1</option><option value="2">Sesi 2</option><option value="3">Sesi 3</option>
+                        <option value="4">Sesi 4</option><option value="5">Sesi 5</option><option value="6">Sesi 6</option>
+                        <option value="7">Sesi 7</option><option value="8">Sesi 8</option><option value="9">Sesi 9</option>
+                        <option value="10">Sesi 10</option><option value="11">Sesi 11</option><option value="12">Sesi 12</option>
                     </select>
+                    <!-- Butang Simpan Progress Khas Admin -->
+                    <button onclick="forceSaveProgress()" class="bg-emerald-500 hover:bg-emerald-600 px-2 py-1 text-xs text-white rounded font-bold transition shadow-sm whitespace-nowrap">Simpan Progress</button>
                 </div>
 
                 <button id="admin-btn" onclick="toggleAdmin()" class="bg-blue-500 hover:bg-blue-600 px-3 py-1.5 text-xs rounded font-semibold shadow transition whitespace-nowrap">Log Masuk Admin</button>
@@ -75,10 +71,27 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto p-4 pb-12">
+        
+        <!-- Rumusan Negeri Keseluruhan -->
+        <div class="mb-4 bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex flex-col md:flex-row justify-between md:items-end mb-1 gap-2">
+                <div>
+                    <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Status Kemajuan Setiap Negeri</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Rumusan status sesi. <span class="font-semibold text-indigo-500">Tuding (hover) pada kotak negeri</span> untuk maklumat Jumlah Calon.</p>
+                </div>
+            </div>
+            
+            <div id="all-states-summary-container" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-3">
+                <!-- Senarai semua negeri akan dijana di sini secara automatik -->
+            </div>
+        </div>
+
+        <!-- Petunjuk Warna -->
         <div class="mb-4 flex flex-wrap gap-4 text-xs font-semibold text-slate-600 bg-white p-3 rounded-lg shadow-sm border border-slate-200">
             <span class="flex items-center gap-1"><span class="w-4 h-4 bg-white border border-slate-300 rounded-full inline-block"></span> Belum Ditanda</span>
-            <span class="flex items-center gap-1"><span class="w-4 h-4 bg-green-500 border border-green-600 rounded-full inline-block"></span> Selesai</span>
-            <span class="flex items-center gap-1"><span class="w-4 h-4 bg-yellow-300 border border-yellow-400 rounded-full inline-block animate-pulse"></span> Sesi Semasa Berlangsung (Perlu ditanda)</span>
+            <span class="flex items-center gap-1"><span class="w-4 h-4 bg-green-500 border border-green-600 rounded-full inline-block"></span> Sesi Selesai</span>
+            <span class="flex items-center gap-1"><span class="w-4 h-4 bg-yellow-300 border border-yellow-400 rounded-full inline-block animate-pulse"></span> Sesi Aktif (Perlu ditanda)</span>
+            <span class="flex items-center gap-1 text-indigo-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Hover elemen untuk info calon</span>
         </div>
 
         <div id="dashboard-container" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
@@ -113,8 +126,7 @@
 
     <script>
         // =========================================================
-        // 1. MASUKKAN FIREBASE CONFIG ANDA DI SINI
-        // Gantikan blok ini dengan kod sebenar dari Firebase anda
+        // MASUKKAN FIREBASE CONFIG ANDA DI SINI
         // =========================================================
         const firebaseConfig = {
             apiKey: "API_KEY_ANDA",
@@ -125,46 +137,47 @@
             messagingSenderId: "SENDER_ID_ANDA",
             appId: "APP_ID_ANDA"
         };
-        // =========================================================
 
-        // 2. DATA LALAI (DEFAULT) - INSPEN di KL
+        // =========================================================
+        // DATA LALAI (DEFAULT) DENGAN DATA CALON RASMI
+        // =========================================================
         const defaultCentersData = [
-            { id: "kch_tebu", state: "SARAWAK", name: "Hotel Harbour View (Bilik Tebu 4,5,6)", sessions: [1,2,3,4,5,6,7,8,9] },
-            { id: "sibu_para", state: "SARAWAK", name: "Paramount Hotel Sibu (Banquet Room)", sessions: [1,2,3,4,5] },
-            { id: "miri_janm", state: "SARAWAK", name: "JANM Miri (Hub Repositori)", sessions: [1,2,3,4,5,6,7,8] },
-            { id: "kk_akasia", state: "SABAH", name: "INTAN Sabah (Makmal Akasia 1)", sessions: [1,2,3,4,5,6] },
-            { id: "kk_iab", state: "SABAH", name: "IAB Caw. Sabah (Makmal Komputer)", sessions: [1,2,3,4,5,6] },
-            { id: "kk_janm", state: "SABAH", name: "JANM Sabah (Bilik Latihan)", sessions: [1,2,3,4,5] },
-            { id: "tawau_janm", state: "SABAH", name: "JANM Tawau (Bilik Latihan)", sessions: [1,2,3,4] },
-            { id: "sdk_janm", state: "SABAH", name: "JANM Sandakan (Bilik Latihan)", sessions: [1,2,3,4,5] },
-            { id: "lab_janm", state: "W.P LABUAN", name: "JANM W.P Labuan (Bilik Latihan)", sessions: [1,2,3] },
-            { id: "kel_bhsa", state: "KELANTAN", name: "KIAS (Makmal Bahasa)", sessions: [1,2,3,4,5,6,7,8,9] },
-            { id: "kel_multi", state: "KELANTAN", name: "KIAS (Makmal Multimedia)", sessions: [1,2,3,4,5,6,7,8,9] },
-            { id: "trg_ict", state: "TERENGGANU", name: "Pusat Latihan ICT Negeri", sessions: [1,2,3,4,5,6,7,8,9,10,11,12] },
-            { id: "phg_dig1", state: "PAHANG", name: "PSDC Semambu (Makmal Digital 1)", sessions: [1,2,3,4,5,6,7,8,9] },
-            { id: "phg_dig2", state: "PAHANG", name: "PSDC Semambu (Makmal Digital 2)", sessions: [1,2,3,4,5,6,7,8,9] },
-            { id: "phg_cyb1", state: "PAHANG", name: "PSDC Semambu (Makmal Cyber 1)", sessions: [1,2,3,4,5,6,7,8,9] },
-            { id: "jhr_alpha", state: "JOHOR", name: "UniKL MITEC (Alpha Lab)", sessions: [1,2,3,4,5,6] },
-            { id: "jhr_beta", state: "JOHOR", name: "UniKL MITEC (Beta Lab)", sessions: [1,2,3,4,5,6] },
-            { id: "jhr_sqc1", state: "JOHOR", name: "UniKL MITEC (SQC Lab 1)", sessions: [1,2,3,4,5,6,7,8,9] },
-            { id: "jhr_sqc2", state: "JOHOR", name: "UniKL MITEC (SQC Lab 2)", sessions: [1,2,3,4,5,6,7,8,9] },
-            { id: "mlk_utc", state: "MELAKA", name: "UTC Melaka (Makmal Komputer Aras 6)", sessions: [1,2,3,4,5,6,7,8,9] },
-            { id: "ns_eltc1", state: "N. SEMBILAN", name: "ELTC Enstek (Multimedia Suite 1)", sessions: [1,2,3,4,5,6,7] },
-            { id: "ns_eltc2", state: "N. SEMBILAN", name: "ELTC Enstek (Multimedia Suite 2)", sessions: [1,2,3,4,5,6,7] },
-            { id: "pls_bptm", state: "PERLIS", name: "BPTM Kangar (Bilik Latihan ICT)", sessions: [1,2,3,4,5,6] },
-            { id: "kdh_pj", state: "KEDAH", name: "AIU (Putrajaya Lab)", sessions: [1,2,3,4,5,6] },
-            { id: "kdh_sbh", state: "KEDAH", name: "AIU (Sabah Lab)", sessions: [1,2,3,4,5,6] },
-            { id: "kdh_pls", state: "KEDAH", name: "AIU (Perlis Lab)", sessions: [1,2,3,4,5,6] },
-            { id: "png_mlm", state: "P. PINANG", name: "KOMTAR (Bilik Millenium Tkt 24)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12] },
-            { id: "png_sbr", state: "P. PINANG", name: "KOMTAR (Bilik Siber Tkt 24)", sessions: [1,2,3,4,5,6,7,8,9,10] },
-            { id: "prk_rcmp", state: "PERAK", name: "UniKL RCMP (Makmal Komputer Lvl 1)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12] },
-            { id: "prk_mydin", state: "PERAK", name: "Mydin Meru (Makmal Digital Perak)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12] },
-            { id: "sel_jps", state: "SELANGOR", name: "JPS Selangor (Makmal Komputer)", sessions: [1,2,3,4,5,6,7,8,9] },
-            { id: "ptj_spk", state: "PUTRAJAYA", name: "Kompleks C (Makmal Komputer SPK)", sessions: [1,2,3,4,5,6,7,8,9] },
-            { id: "kl_mut1", state: "KUALA LUMPUR", name: "INSPEN (Makmal Sri Mutiara 1)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12] },
-            { id: "kl_mut2", state: "KUALA LUMPUR", name: "INSPEN (Makmal Sri Mutiara 2)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12] },
-            { id: "kl_cen2", state: "KUALA LUMPUR", name: "INSPEN (Makmal Sri Cendana 2)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12] },
-            { id: "kl_cen3", state: "KUALA LUMPUR", name: "INSPEN (Makmal Sri Cendana 3)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12] }
+            { id: "kch_tebu", state: "SARAWAK", name: "Hotel Harbour View (Bilik Tebu 4,5,6)", sessions: [1,2,3,4,5,6,7,8,9], candidates: [28,28,28,28,28,28,28,28,26] },
+            { id: "sibu_para", state: "SARAWAK", name: "Paramount Hotel Sibu (Banquet Room)", sessions: [1,2,3,4,5], candidates: [22,22,22,22,16] },
+            { id: "miri_janm", state: "SARAWAK", name: "JANM Miri (Hub Repositori)", sessions: [1,2,3,4,5,6,7,8], candidates: [14,14,14,14,14,14,14,12] },
+            { id: "kk_akasia", state: "SABAH", name: "INTAN Sabah (Makmal Akasia 1)", sessions: [1,2,3,4,5,6], candidates: [21,21,21,21,21,20] },
+            { id: "kk_iab", state: "SABAH", name: "IAB Caw. Sabah (Makmal Komputer)", sessions: [1,2,3,4,5,6], candidates: [12,12,12,12,12,12] },
+            { id: "kk_janm", state: "SABAH", name: "JANM Sabah (Bilik Latihan)", sessions: [1,2,3,4,5], candidates: [20,20,20,20,20] },
+            { id: "tawau_janm", state: "SABAH", name: "JANM Tawau (Bilik Latihan)", sessions: [1,2,3,4], candidates: [14,14,14,11] },
+            { id: "sdk_janm", state: "SABAH", name: "JANM Sandakan (Bilik Latihan)", sessions: [1,2,3,4,5], candidates: [13,13,13,13,9] },
+            { id: "lab_janm", state: "W.P LABUAN", name: "JANM W.P Labuan (Bilik Latihan)", sessions: [1,2,3], candidates: [16,16,16] },
+            { id: "kel_bhsa", state: "KELANTAN", name: "KIAS (Makmal Bahasa)", sessions: [1,2,3,4,5,6,7,8,9], candidates: [24,24,24,24,24,24,24,24,24] },
+            { id: "kel_multi", state: "KELANTAN", name: "KIAS (Makmal Multimedia)", sessions: [1,2,3,4,5,6,7,8,9], candidates: [25,25,25,25,25,25,25,25,17] },
+            { id: "trg_ict", state: "TERENGGANU", name: "Pusat Latihan ICT Negeri", sessions: [1,2,3,4,5,6,7,8,9,10,11,12], candidates: [37,37,37,37,37,37,37,37,37,37,37,28] },
+            { id: "phg_dig1", state: "PAHANG", name: "PSDC Semambu (Makmal Digital 1)", sessions: [1,2,3,4,5,6,7,8,9], candidates: [16,16,16,16,16,16,16,16,16] },
+            { id: "phg_dig2", state: "PAHANG", name: "PSDC Semambu (Makmal Digital 2)", sessions: [1,2,3,4,5,6,7,8,9], candidates: [22,22,22,22,22,22,22,22,22] },
+            { id: "phg_cyb1", state: "PAHANG", name: "PSDC Semambu (Makmal Cyber 1)", sessions: [1,2,3,4,5,6,7,8,9], candidates: [16,16,16,16,16,16,16,16,10] },
+            { id: "jhr_alpha", state: "JOHOR", name: "UniKL MITEC (Alpha Lab)", sessions: [1,2,3,4,5,6], candidates: [25,25,25,25,25,25] },
+            { id: "jhr_beta", state: "JOHOR", name: "UniKL MITEC (Beta Lab)", sessions: [1,2,3,4,5,6], candidates: [25,25,25,25,25,25] },
+            { id: "jhr_sqc1", state: "JOHOR", name: "UniKL MITEC (SQC Lab 1)", sessions: [1,2,3,4,5,6,7,8,9], candidates: [25,25,25,25,25,25,25,25,15] },
+            { id: "jhr_sqc2", state: "JOHOR", name: "UniKL MITEC (SQC Lab 2)", sessions: [1,2,3,4,5,6,7,8,9], candidates: [25,25,25,25,25,25,25,25,12] },
+            { id: "mlk_utc", state: "MELAKA", name: "UTC Melaka (Makmal Komputer Aras 6)", sessions: [1,2,3,4,5,6,7,8,9], candidates: [22,22,22,22,22,22,22,22,20] },
+            { id: "ns_eltc1", state: "N. SEMBILAN", name: "ELTC Enstek (Multimedia Suite 1)", sessions: [1,2,3,4,5,6,7], candidates: [19,19,19,19,19,19,19] },
+            { id: "ns_eltc2", state: "N. SEMBILAN", name: "ELTC Enstek (Multimedia Suite 2)", sessions: [1,2,3,4,5,6,7], candidates: [19,19,19,19,19,19,19] },
+            { id: "pls_bptm", state: "PERLIS", name: "BPTM Kangar (Bilik Latihan ICT)", sessions: [1,2,3,4,5,6], candidates: [21,21,21,21,21,18] },
+            { id: "kdh_pj", state: "KEDAH", name: "AIU (Putrajaya Lab)", sessions: [1,2,3,4,5,6], candidates: [22,22,22,22,22,18] },
+            { id: "kdh_sbh", state: "KEDAH", name: "AIU (Sabah Lab)", sessions: [1,2,3,4,5,6], candidates: [22,22,22,22,22,18] },
+            { id: "kdh_pls", state: "KEDAH", name: "AIU (Perlis Lab)", sessions: [1,2,3,4,5,6], candidates: [22,22,22,22,22,18] },
+            { id: "png_mlm", state: "P. PINANG", name: "KOMTAR (Bilik Millenium Tkt 24)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12], candidates: [20,20,20,20,20,20,20,20,20,20,20,15] },
+            { id: "png_sbr", state: "P. PINANG", name: "KOMTAR (Bilik Siber Tkt 24)", sessions: [1,2,3,4,5,6,7,8,9,10], candidates: [10,10,10,10,10,10,10,10,10,10] },
+            { id: "prk_rcmp", state: "PERAK", name: "UniKL RCMP (Makmal Komputer Lvl 1)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12], candidates: [35,35,35,35,35,35,35,35,35,35,35,24] },
+            { id: "prk_mydin", state: "PERAK", name: "Mydin Meru (Makmal Digital Perak)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12], candidates: [36,36,36,36,36,36,36,36,36,36,36,36] },
+            { id: "sel_jps", state: "SELANGOR", name: "JPS Selangor (Makmal Komputer)", sessions: [1,2,3,4,5,6,7,8,9], candidates: [41,41,41,41,41,41,41,41,34] },
+            { id: "ptj_spk", state: "PUTRAJAYA", name: "Kompleks C (Makmal Komputer SPK)", sessions: [1,2,3,4,5,6,7,8,9], candidates: [50,50,50,50,50,50,50,50,49] },
+            { id: "kl_mut1", state: "KUALA LUMPUR", name: "INSPEN (Makmal Sri Mutiara 1)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12], candidates: [22,22,22,22,22,22,22,22,22,22,22,22] },
+            { id: "kl_mut2", state: "KUALA LUMPUR", name: "INSPEN (Makmal Sri Mutiara 2)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12], candidates: [22,22,22,22,22,22,22,22,22,22,22,20] },
+            { id: "kl_cen2", state: "KUALA LUMPUR", name: "INSPEN (Makmal Sri Cendana 2)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12], candidates: [22,22,22,22,22,22,22,22,22,22,22,20] },
+            { id: "kl_cen3", state: "KUALA LUMPUR", name: "INSPEN (Makmal Sri Cendana 3)", sessions: [1,2,3,4,5,6,7,8,9,10,11,12], candidates: [22,22,22,22,22,22,22,22,22,22,22,20] }
         ];
 
         const zonesConfig = [
@@ -175,43 +188,32 @@
             { name: "Zon Timur", states: ["KELANTAN", "TERENGGANU", "PAHANG"] }
         ];
 
-        // 3. PEMBOLEHUBAH GLOBAL
         let centersData = [];
         let ticksData = {};
         let currentHighlight = 0;
         let isAdmin = false;
         let db = null;
+        let autoSaveTimeout;
 
-        // =========================================================
-        // 4. LOGIK MULA - PAPAR DASHBOARD TANPA TUNGGU FIREBASE
-        // =========================================================
         document.addEventListener('DOMContentLoaded', () => {
-            // Tarik data backup/offline dari memori pelayar web (Local Storage)
             centersData = JSON.parse(localStorage.getItem('appCentersData')) || defaultCentersData;
             ticksData = JSON.parse(localStorage.getItem('appTicksData')) || {};
             currentHighlight = parseInt(localStorage.getItem('appHighlight')) || 0;
 
-            // Lukis dashboard SERTA-MERTA
             renderDashboard();
-
-            // Mula sambungkan ke Cloud Firebase
             setupFirebase();
         });
 
         function setupFirebase() {
-            // Elak crash jika pengguna terlupa masukkan API Key sebenar
             if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes("API_KEY_ANDA")) {
-                console.warn("Mod Offline Aktif: Sila masukkan Firebase Config di dalam kod HTML untuk membolehkan Live Sync.");
+                console.warn("Mod Offline Aktif.");
                 return;
             }
 
             try {
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                }
+                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
                 db = firebase.database();
 
-                // Dengar sebarang perubahan di Cloud secara langsung (Live Listener)
                 db.ref('/').on('value', (snapshot) => {
                     const data = snapshot.val();
                     if (data) {
@@ -221,21 +223,17 @@
                         if (data.ticks) ticksData = data.ticks;
                         currentHighlight = data.highlight !== undefined ? data.highlight : 0;
                         
-                        // Simpan backup terkini ke dalam pelayar web
                         localStorage.setItem('appCentersData', JSON.stringify(centersData));
                         localStorage.setItem('appTicksData', JSON.stringify(ticksData));
                         localStorage.setItem('appHighlight', currentHighlight);
                         
-                        // Jika struktur pusat berubah (Admin tambah/buang pusat), lukis semula semua
                         if (oldCentersStr !== JSON.stringify(centersData)) {
                             renderDashboard(); 
                         } else {
-                            // Jika sekadar 'tick' atau tukar highlight, kemaskini warna sahaja (Pantas)
                             updateHighlightBadge();
                             updateTicksUI();
                         }
                     } else {
-                        // Jika Cloud Kosong (Awal setup), hantar data lalai (default) ke Cloud
                         db.ref('/').set({ centers: centersData, ticks: ticksData, highlight: currentHighlight });
                     }
                 });
@@ -244,28 +242,56 @@
             }
         }
 
-        // =========================================================
-        // 5. FUNGSI MENANDA SESI (TICK) OLEH PENGGUNA (PUBLIC)
-        // =========================================================
-        function toggleSession(storageKey, sessionNum) {
+        // FUNGSI TICK DAN AUTO-SAVE FEEDBACK
+        function toggleSession(storageKey) {
             const isCurrentlyChecked = ticksData[storageKey] === true;
             
-            // 1. Kemaskini segera pada memori tempatan (Optimistic UI)
             ticksData[storageKey] = !isCurrentlyChecked;
             localStorage.setItem('appTicksData', JSON.stringify(ticksData));
             
-            // 2. Tukar warna butang di skrin tanpa menunggu Cloud
             updateTicksUI();
+            triggerAutoSaveFeedback(); // Panggil visual animasi 'Menyimpan...'
             
-            // 3. Hantar isyarat ke Cloud (Firebase) jika disambung
-            if (db) {
-                db.ref('ticks/' + storageKey).set(!isCurrentlyChecked).catch(e => console.error("Gagal simpan ke Cloud:", e));
-            }
+            if (db) db.ref('ticks/' + storageKey).set(!isCurrentlyChecked).catch(e => console.error(e));
         }
 
-        // =========================================================
-        // 6. FUNGSI KHAS ADMIN (EDIT & HIGHLIGHT)
-        // =========================================================
+        function triggerAutoSaveFeedback() {
+            const statusEl = document.getElementById('auto-save-status');
+            
+            // Fasa 1: Menyimpan (Warna Kuning)
+            statusEl.innerText = "Menyimpan...";
+            statusEl.className = "bg-indigo-700 text-yellow-300 px-2 py-0.5 rounded-full text-[10px] font-bold opacity-100 transition-opacity duration-300 shadow-sm";
+            
+            clearTimeout(autoSaveTimeout);
+            
+            // Fasa 2: Tersimpan (Warna Hijau selepas 500ms)
+            autoSaveTimeout = setTimeout(() => {
+                statusEl.innerText = "Tersimpan ✓";
+                statusEl.className = "bg-indigo-700 text-green-300 px-2 py-0.5 rounded-full text-[10px] font-bold opacity-100 transition-opacity duration-300 shadow-sm";
+                
+                // Fasa 3: Hilang (Pudar selepas 2 saat)
+                setTimeout(() => {
+                    statusEl.classList.replace('opacity-100', 'opacity-0');
+                }, 2000);
+            }, 500);
+        }
+
+        // FUNGSI KHAS ADMIN (SIMPAN MANUAL)
+        function forceSaveProgress() {
+            // Backup penuh ke LocalStorage
+            localStorage.setItem('appTicksData', JSON.stringify(ticksData));
+            localStorage.setItem('appCentersData', JSON.stringify(centersData));
+            localStorage.setItem('appHighlight', currentHighlight);
+            
+            // Hantar pukal ke Firebase
+            if (db) {
+                db.ref('ticks').set(ticksData);
+                db.ref('centers').set(centersData);
+                db.ref('highlight').set(currentHighlight);
+            }
+            alert("Semua data progress dan tetapan telah berjaya disimpan secara manual ke pangkalan data!");
+        }
+
         function toggleAdmin() {
             if (!isAdmin) {
                 const pass = prompt("Sila masukkan kata laluan Admin (Hint: admin123):");
@@ -276,7 +302,7 @@
                     document.getElementById('admin-btn').classList.replace('hover:bg-blue-600', 'hover:bg-orange-600');
                     document.getElementById('admin-controls').classList.replace('hidden', 'flex');
                     document.getElementById('highlight-select').value = currentHighlight;
-                    renderDashboard(); // Papar butang Edit
+                    renderDashboard();
                 } else if (pass !== null) {
                     alert("Kata laluan salah!");
                 }
@@ -286,16 +312,14 @@
                 document.getElementById('admin-btn').classList.replace('bg-orange-500', 'bg-blue-500');
                 document.getElementById('admin-btn').classList.replace('hover:bg-orange-600', 'hover:bg-blue-600');
                 document.getElementById('admin-controls').classList.replace('flex', 'hidden');
-                renderDashboard(); // Sorok butang Edit
+                renderDashboard();
             }
         }
 
         function setHighlight(val) {
             currentHighlight = parseInt(val);
             localStorage.setItem('appHighlight', currentHighlight);
-            if (db) {
-                db.ref('highlight').set(currentHighlight).catch(e => console.error(e));
-            }
+            if (db) db.ref('highlight').set(currentHighlight).catch(e => console.error(e));
             updateHighlightBadge();
             updateTicksUI();
         }
@@ -310,68 +334,57 @@
             }
         }
 
-        function closeModal() { 
-            document.getElementById('edit-modal').classList.add('hidden'); 
-        }
+        function closeModal() { document.getElementById('edit-modal').classList.add('hidden'); }
 
         function saveEdit() {
             const id = document.getElementById('edit-id').value;
             const newName = document.getElementById('edit-name').value;
             const newSessionsRaw = document.getElementById('edit-sessions').value;
 
-            // Pastikan hanya nombor sesi yang sah diambil
             const newSessions = newSessionsRaw.split(',').map(s => parseInt(s.trim())).filter(s => !isNaN(s));
 
-            if(newName.trim() === '' || newSessions.length === 0) {
-                return alert("Sila isikan Nama Pusat dan sekurang-kurangnya satu nombor Sesi.");
-            }
+            if(newName.trim() === '' || newSessions.length === 0) return alert("Sila isi maklumat dengan lengkap.");
 
             const centerIndex = centersData.findIndex(c => c.id === id);
             if(centerIndex !== -1) {
                 centersData[centerIndex].name = newName;
                 centersData[centerIndex].sessions = newSessions;
                 
-                // Kemaskini LocalStorage
-                localStorage.setItem('appCentersData', JSON.stringify(centersData));
+                centersData[centerIndex].candidates = newSessions.map((_, i) => 
+                    (centersData[centerIndex].candidates && centersData[centerIndex].candidates[i]) 
+                    ? centersData[centerIndex].candidates[i] 
+                    : 20
+                );
                 
-                // Kemaskini Firebase (Cloud)
-                if (db) {
-                    db.ref('centers').set(centersData).catch(e => console.error(e));
-                }
+                localStorage.setItem('appCentersData', JSON.stringify(centersData));
+                if (db) db.ref('centers').set(centersData).catch(e => console.error(e));
                 
                 closeModal();
                 renderDashboard();
             }
         }
 
-        // =========================================================
-        // 7. FUNGSI MELUKIS KOTAK PUSAT DAN WARNA BUTANG (UI)
-        // =========================================================
         function renderDashboard() {
             const container = document.getElementById('dashboard-container');
             container.innerHTML = '';
             
             updateHighlightBadge();
 
-            // Loop setiap zon
             zonesConfig.forEach(zone => {
                 const zoneCenters = centersData.filter(c => zone.states.includes(c.state));
-                if (zoneCenters.length === 0) return; // Skip zon jika tiada makmal di dalamnya
+                if (zoneCenters.length === 0) return;
 
-                // Bina Tajuk Zon
                 const zoneHeader = document.createElement('div');
                 zoneHeader.className = "col-span-full mt-6 mb-2 border-b-2 border-indigo-200 pb-2 flex items-center";
                 zoneHeader.innerHTML = `<h2 class="text-2xl font-extrabold text-indigo-900">${zone.name}</h2>`;
                 container.appendChild(zoneHeader);
 
-                // Kumpulkan makmal mengikut Negeri
                 const stateGroups = {};
                 zoneCenters.forEach(center => {
                     if (!stateGroups[center.state]) stateGroups[center.state] = [];
                     stateGroups[center.state].push(center);
                 });
 
-                // Bina Kotak Untuk Setiap Negeri
                 zone.states.forEach(state => {
                     if (!stateGroups[state]) return;
                     const stateCenters = stateGroups[state];
@@ -388,23 +401,31 @@
                     `;
 
                     stateCenters.forEach(center => {
+                        let totalCalonPusat = 0;
+                        if(center.candidates) {
+                            totalCalonPusat = center.candidates.reduce((a, b) => a + b, 0);
+                        }
+
                         html += `
                             <div class="p-4 hover:bg-slate-50 transition-colors">
                                 <div class="flex justify-between items-start mb-2">
-                                    <p class="text-sm font-semibold text-slate-800">${center.name}</p>
+                                    <p class="text-sm font-semibold text-slate-800 cursor-help border-b border-dashed border-slate-400" title="Jumlah Calon Keseluruhan Pusat: ${totalCalonPusat} Calon">
+                                        ${center.name}
+                                    </p>
                                     ${isAdmin ? `<button onclick="openModal('${center.id}')" class="text-xs bg-yellow-100 text-yellow-700 hover:bg-yellow-200 px-2 py-1 rounded font-semibold border border-yellow-300 transition focus:outline-none">Edit</button>` : ''}
                                 </div>
                                 <div class="flex flex-wrap gap-2">
                         `;
 
-                        // Bina Butang Sesi bagi Pusat tersebut
-                        center.sessions.forEach(s => {
+                        center.sessions.forEach((s, idx) => {
                             const storageKey = `sesi_${s}_pusat_${center.id}`;
+                            const calonNum = (center.candidates && center.candidates[idx]) ? center.candidates[idx] : 0;
+                            
                             html += `
                                 <button id="btn-${storageKey}" 
-                                    onclick="toggleSession('${storageKey}', ${s})" 
-                                    class="w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold border transition-all focus:outline-none"
-                                    title="Tandakan Sesi ${s}">
+                                    onclick="toggleSession('${storageKey}')" 
+                                    class="w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold border transition-all focus:outline-none cursor-help"
+                                    title="Sesi ${s} (${calonNum} Calon)">
                                     ${s}
                                 </button>
                             `;
@@ -417,11 +438,9 @@
                 });
             });
 
-            // Set warna butang berdasarkan data tick dan highlight semasa
             updateTicksUI(); 
         }
 
-        // Fungsi ringan untuk menukar warna butang secara live tanpa perlu load kotak semula
         function updateTicksUI() {
             centersData.forEach(center => {
                 center.sessions.forEach(s => {
@@ -432,28 +451,25 @@
                         const isChecked = ticksData[storageKey] === true;
                         const isHighlighted = (s === currentHighlight);
                         
-                        let btnClass = "w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold border transition-all focus:outline-none ";
+                        let btnClass = "w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold border transition-all focus:outline-none cursor-help ";
                         
                         if (isChecked) {
                             btnClass += "bg-green-500 text-white border-green-600 shadow-inner";
-                            // Selesai, tapi masih dalam sesi aktif (Warna hijau, ada outline kelip kuning-hijau)
                             if(isHighlighted) btnClass += " ring-4 ring-green-300 highlight-pulse";
                         } else {
                             if(isHighlighted) {
-                                // Sesi Aktif tapi BELUM selesai (Warna kuning kelip)
                                 btnClass += "bg-yellow-300 text-yellow-900 border-yellow-400 ring-4 ring-yellow-300 highlight-pulse";
                             } else {
-                                // Biasa (Warna putih kelabu)
                                 btnClass += "bg-white text-slate-500 border-slate-300 hover:bg-slate-100";
                             }
                         }
                         
-                        // Kemaskini CSS Class pada DOM elemen
                         if (btn.className !== btnClass) btn.className = btnClass;
                     }
                 });
             });
             updateOverallProgress();
+            updateStateSummary();
         }
 
         function updateHighlightBadge() {
@@ -480,6 +496,65 @@
             const percent = totalPossible === 0 ? 0 : Math.round((totalTicked / totalPossible) * 100);
             document.getElementById('overall-progress-text').innerText = `${percent}%`;
             document.getElementById('overall-progress-bar').style.width = `${percent}%`;
+        }
+
+        function updateStateSummary() {
+            const allStates = [...new Set(centersData.map(c => c.state))].sort();
+            const container = document.getElementById('all-states-summary-container');
+            let html = '';
+
+            allStates.forEach(state => {
+                const stateCenters = centersData.filter(c => c.state === state);
+                let totalSessions = 0;
+                let tickedSessions = 0;
+                let totalCalon = 0;
+                let tickedCalon = 0;
+
+                stateCenters.forEach(center => {
+                    center.sessions.forEach((s, idx) => {
+                        totalSessions++;
+                        const calon = (center.candidates && center.candidates[idx]) ? center.candidates[idx] : 0;
+                        totalCalon += calon;
+                        
+                        const storageKey = `sesi_${s}_pusat_${center.id}`;
+                        if (ticksData[storageKey] === true) {
+                            tickedSessions++;
+                            tickedCalon += calon;
+                        }
+                    });
+                });
+
+                const percent = totalSessions === 0 ? 0 : Math.round((tickedSessions / totalSessions) * 100);
+                
+                let bgClass = "bg-slate-50 border-slate-200 text-slate-600";
+                let progressColor = "bg-slate-300";
+                
+                if (percent === 100) {
+                    bgClass = "bg-green-50 border-green-200 text-green-800 shadow-sm";
+                    progressColor = "bg-green-500";
+                } else if (percent > 0) {
+                    bgClass = "bg-blue-50 border-blue-200 text-blue-800 shadow-sm";
+                    progressColor = "bg-blue-500";
+                }
+
+                html += `
+                    <div class="border rounded p-2 flex flex-col gap-1 transition-colors hover:shadow-md cursor-help ${bgClass}" 
+                         title="Jumlah Calon Selesai: ${tickedCalon} / ${totalCalon}">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold truncate pr-1">${state}</span>
+                            <span class="text-xs font-semibold">${percent}%</span>
+                        </div>
+                        <div class="w-full bg-black/10 rounded-full h-1.5 overflow-hidden">
+                            <div class="${progressColor} h-1.5 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                        </div>
+                        <div class="text-[10px] text-opacity-80 text-right font-medium">
+                            ${tickedSessions}/${totalSessions} Sesi
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
         }
     </script>
 </body>
